@@ -22,10 +22,11 @@ export default defineConfig(({ mode }) => {
       build: {
         assetsInlineLimit: 4096,
         rollupOptions: {
-          input: {
-            main: path.resolve(__dirname, 'index.html')
-          },
+          input: path.resolve(__dirname, 'index.html'),
           output: {
+            entryFileNames: 'assets/[name].[hash].js',
+            chunkFileNames: 'assets/[name].[hash].js',
+            assetFileNames: 'assets/[name].[hash].[ext]',
             manualChunks: undefined
           }
         }
