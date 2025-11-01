@@ -5,9 +5,14 @@
 [build.environment]
   GEMINI_API_KEY = ""
 
-# Secrets scanning deaktivieren für diese Variable
+# Secrets scanning für bestimmte Pfade und Keys deaktivieren
 [build.processing]
   skip_processing = false
+
+# Netlify Secrets Scan Konfiguration
+[build.processing.skip]
+  paths = ["dist/assets/index*.js"]
+  keys = ["VITE_GEMINI_API_KEY"]
 
 [[headers]]
   for = "/*"
