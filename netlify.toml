@@ -3,7 +3,7 @@
   publish = "dist"
 
 [build.environment]
-  VITE_GEMINI_API_KEY = ""
+  GEMINI_API_KEY = ""
 
 # Secrets scanning deaktivieren für diese Variable
 [build.processing]
