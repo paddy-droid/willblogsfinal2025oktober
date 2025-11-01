@@ -6,16 +6,12 @@ let ai: GoogleGenAI | null = null;
 
 const getAi = () => {
   if (!ai) {
-    // Für lokale Entwicklung - Vite injiziert die Environment-Variable
-    const viteApiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY;
-    
-    // Für Production (wird von Netlify Environment Variables injected)
-    const netlifyApiKey = (window as any).GEMINI_API_KEY;
-    
-    const apiKey = viteApiKey || netlifyApiKey;
+    // API-Key wird nur zur Laufzeit von Netlify Environment Variables injected
+    // Für lokale Entwicklung muss die Variable manuell im Window-Objekt gesetzt werden
+    const apiKey = (window as any).GEMINI_API_KEY;
     
     if (!apiKey) {
-      throw new Error("GEMINI_API_KEY environment variable is not set");
+      throw new Error("GEMINI_API_KEY environment variable is not set. Please configure Netlify Environment Variables.");
     }
     
     ai = new GoogleGenAI({ apiKey });

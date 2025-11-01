@@ -10,8 +10,6 @@ export default defineConfig(({ mode }) => {
         host: '0.0.0.0',
       },
       plugins: [react()],
-      // Keine API-Keys mehr im Client-Code - alles zur Laufzeit injected
-      define: {},
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),
@@ -27,10 +25,6 @@ export default defineConfig(({ mode }) => {
             assetFileNames: 'assets/[name].[hash].[ext]',
             manualChunks: undefined
           }
-        },
-        // Environment-Variablen komplett aus Build entfernen
-        define: {
-          'import.meta.env': '{}'
         }
       },
       publicDir: 'public'
