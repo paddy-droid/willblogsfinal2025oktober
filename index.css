@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    --brand-orange: #E58E1A;
+    --brand-green: #22c55e;
+}
+
+.generated-html-content h1,
+.generated-html-content h2,
+.generated-html-content h3 {
+  font-weight: bold;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  color: #1f2937; /* gray-800 */
+}
+
+.generated-html-content h1 { font-size: 1.875rem; }
+.generated-html-content h2 { font-size: 1.5rem; }
+.generated-html-content h3 { font-size: 1.25rem; }
+
+.generated-html-content p {
+  margin-bottom: 1em;
+  line-height: 1.6;
+  color: #374151; /* gray-700 */
+}
+
+.generated-html-content ul {
+  list-style-type: disc;
+  padding-left: 2em;
+  margin-bottom: 1em;
+}
+
+.generated-html-content li {
+  margin-bottom: 0.5em;
+}
+
+.generated-html-content a {
+  color: var(--brand-orange);
+  text-decoration: underline;
+}
+
+.generated-html-content a:hover {
+  opacity: 0.8;
+}
+
+.generated-html-content strong {
+  font-weight: bold;
+  color: #000000;
+}
+
+pre {
+    background-color: #f3f4f6; /* gray-100 */
+    border: 1px solid #d1d5db; /* gray-300 */
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    color: #111827; /* gray-900 */
+    font-family: monospace;
+    font-size: 0.875rem; /* 14px */
+}
+
+code {
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
