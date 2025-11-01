@@ -1,11 +1,11 @@
 import { GoogleGenAI, Modality, GenerateContentResponse, HarmBlockThreshold, HarmCategory } from "@google/genai";
 import { GroundingChunk } from "../types";
 
-if (!process.env.API_KEY) {
-  throw new Error("API_KEY environment variable is not set");
+if (!process.env.GEMINI_API_KEY) {
+  throw new Error("GEMINI_API_KEY environment variable is not set");
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export const conductResearch = async (topic: string) => {
   try {
