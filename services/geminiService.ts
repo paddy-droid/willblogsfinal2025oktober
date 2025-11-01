@@ -1,27 +1,31 @@
 import { GoogleGenAI, Modality, GenerateContentResponse, HarmBlockThreshold, HarmCategory } from "@google/genai";
 import { GroundingChunk } from "../types";
 
-// API-Schlüssel aus Environment-Variable holen (wird von Netlify injected)
-const getApiKey = () => {
-  // Für lokale Entwicklung - Vite injiziert die Environment-Variable
-  const viteApiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY;
-  if (viteApiKey) {
-    return viteApiKey;
-  }
-  
-  // Für Production (wird von Netlify Environment Variables injected)
-  if ((window as any).GEMINI_API_KEY) {
-    return (window as any).GEMINI_API_KEY;
-  }
-  
-  throw new Error("GEMINI_API_KEY environment variable is not set");
-};
+// API-Schlüssel wird lazy loading geholt, um Build-Probleme zu vermeiden
+let ai: GoogleGenAI | null = null;
 
-const ai = new GoogleGenAI({ apiKey: getApiKey() });
+const getAi = () => {
+  if (!ai) {
+    // Für lokale Entwicklung - Vite injiziert die Environment-Variable
+    const viteApiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY;
+    
+    // Für Production (wird von Netlify Environment Variables injected)
+    const netlifyApiKey = (window as any).GEMINI_API_KEY;
+    
+    const apiKey = viteApiKey || netlifyApiKey;
+    
+    if (!apiKey) {
+      throw new Error("GEMINI_API_KEY environment variable is not set");
+    }
+    
+    ai = new GoogleGenAI({ apiKey });
+  }
+  return ai;
+};
 
 export const conductResearch = async (topic: string) => {
   try {
-    const response = await ai.models.generateContent({
+    const response = await getAi().models.generateContent({
       model: "gemini-2.5-flash",
       contents: `Führe eine tiefgehende Webrecherche zum Thema "${topic}" durch. Deine oberste Priorität ist die Glaubwürdigkeit und Autorität der Quellen.
 **Zusätzlich musst du sicherstellen, dass nur moderne, wissenschaftlich fundierte Terminologien und Konzepte verwendet werden. Veraltete oder widerlegte Theorien (wie z.B. Dominanztheorie, Rudelführer-Konzepte) sind strikt zu vermeiden.** Der Fokus liegt auf positiver Verstärkung und tierschutzkonformen Ansätzen, wie sie im "Willenskraft"-Branding verankert sind.
@@ -66,7 +70,7 @@ export const createOutline = async (topic: string, research: string, sources: Gr
       .filter(Boolean)
       .join('\n');
     
-    const response = await ai.models.generateContent({
+    const response = await getAi().models.generateContent({
       model: "gemini-2.5-flash",
       contents: `Basierend auf der folgenden Recherche erstelle eine detaillierte Gliederung für einen Blogartikel zum Thema "${topic}":
 
@@ -102,7 +106,7 @@ ${internalLinks.join(', ')}
 
 export const generateContentPart = async (topic: string, outline: string, previousContent: string, part: number) => {
   try {
-    const response = await ai.models.generateContent({
+    const response = await getAi().models.generateContent({
       model: "gemini-2.5-flash",
       contents: `Schreibe Teil ${part} des Blogartikels zum Thema "${topic}" basierend auf der folgenden Gliederung:
 
@@ -136,7 +140,7 @@ ${previousContent}
 
 export const reviseContent = async (content: string, feedback: string) => {
   try {
-    const response = await ai.models.generateContent({
+    const response = await getAi().models.generateContent({
       model: "gemini-2.5-flash",
       contents: `Überarbeite den folgenden Inhalt basierend auf dem Feedback:
 
@@ -164,7 +168,7 @@ ${feedback}
 
 export const generateProductionHtml = async (finalContent: string) => {
   try {
-    const response = await ai.models.generateContent({
+    const response = await getAi().models.generateContent({
       model: "gemini-2.5-flash",
       contents: `Erstelle vollständigen, WordPress-kompatiblen HTML-Code aus dem folgenden Inhalt:
 
@@ -198,7 +202,7 @@ ${finalContent}
 
 export const generateImageFromPrompt = async (prompt: string, referenceImage?: string) => {
   try {
-    const response = await ai.models.generateContent({
+    const response = await getAi().models.generateContent({
       model: "gemini-2.0-flash-exp",
       contents: referenceImage ? [
         {

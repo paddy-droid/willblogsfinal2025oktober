@@ -10,10 +10,8 @@ export default defineConfig(({ mode }) => {
         host: '0.0.0.0',
       },
       plugins: [react()],
-      // API-Schlüssel sicher über Environment-Variablen injizieren
-      define: {
-        'import.meta.env.VITE_GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-      },
+      // Keine API-Keys im Build-Code - alles zur Laufzeit injected
+      define: {},
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),
