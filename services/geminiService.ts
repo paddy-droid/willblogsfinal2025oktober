@@ -41,7 +41,7 @@ export const conductResearch = async (topic: string) => {
 **Strukturierung der Recherche:**
 1.  **Synthese der Forschung:** Fasse die wichtigsten wissenschaftlichen Erkenntnisse zusammen.
 2.  **Integration der "Willenskraft"-Philosophie:** Erkläre, wie die Forschungsergebnisse zur positiven Verstärkung und tierschutzkonformen Ausbildung passen.
-3.  **SEO & Verlinkung:** Erstelle eine Liste mit 5-7 relevanten Keywords und 2-3 internen Links (${process.env.INTERNAL_LINKS || 'https://www.willenskraft.co.at/'}) zu passenden Artikeln.
+3.  **SEO & Verlinkung:** Erstelle eine Liste mit 5-7 relevanten Keywords und 2-3 internen Links (${(window as any).INTERNAL_LINKS || 'https://www.willenskraft.co.at/'}) zu passenden Artikeln.
 
 **Formatierung der Ausgabe:**
 Strukturiere deine Antwort klar und präzise. Verwende Absätze, um die verschiedenen Aspekte deiner Recherche voneinander zu trennen.`,

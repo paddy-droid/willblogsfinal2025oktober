@@ -44,7 +44,9 @@ self.addEventListener('fetch', (event) => {
       console.log(`Service Worker: Proxying to ${proxyUrl}`);
 
       // Construct headers for the request to the proxy
+      // Create a fresh Headers object to avoid immutability issues
       const newHeaders = new Headers();
+      
       // Copy essential headers from the original request
       // For OPTIONS (preflight) requests, Access-Control-Request-*  are critical.
       // For actual requests (POST, GET), Content-Type, Accept etc.
@@ -55,21 +57,36 @@ self.addEventListener('fetch', (event) => {
         'Access-Control-Request-Headers',
       ];
 
-      for (const headerName of headersToCopy) {
-        if (event.request.headers.has(headerName)) {
-          newHeaders.set(headerName, event.request.headers.get(headerName));
+      // Safely copy headers to avoid immutability issues
+      try {
+        for (const headerName of headersToCopy) {
+          if (event.request.headers.has(headerName)) {
+            const headerValue = event.request.headers.get(headerName);
+            if (headerValue) {
+              newHeaders.set(headerName, headerValue);
+            }
+          }
         }
-      }
 
-      if (event.request.method === 'POST') {
-
-        // Ensure Content-Type is set for POST requests to the proxy, defaulting to application/json
-        if (!newHeaders.has('Content-Type')) {
-          console.warn("Service Worker: POST request to proxy was missing Content-Type in newHeaders. Defaulting to application/json.");
-          newHeaders.set('Content-Type', 'application/json');
-        } else {
-          console.log(`Service Worker: POST request to proxy has Content-Type: ${newHeaders.get('Content-Type')}`);
+        if (event.request.method === 'POST') {
+          // Ensure Content-Type is set for POST requests to the proxy, defaulting to application/json
+          if (!newHeaders.has('Content-Type')) {
+            console.warn("Service Worker: POST request to proxy was missing Content-Type in newHeaders. Defaulting to application/json.");
+            newHeaders.set('Content-Type', 'application/json');
+          } else {
+            console.log(`Service Worker: POST request to proxy has Content-Type: ${newHeaders.get('Content-Type')}`);
+          }
         }
+      } catch (headerError) {
+        console.error('Service Worker: Error setting headers:', headerError);
+        // Fallback to minimal headers if there's an error
+        const fallbackHeaders = new Headers();
+        if (event.request.method === 'POST') {
+          fallbackHeaders.set('Content-Type', 'application/json');
+        }
+        fallbackHeaders.set('Accept', 'application/json');
+        // Use fallback headers if header manipulation failed
+        var newHeaders = fallbackHeaders;
       }
 
       const requestOptions = {
