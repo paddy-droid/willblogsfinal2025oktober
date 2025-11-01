@@ -22,6 +22,9 @@ export default defineConfig(({ mode }) => {
       build: {
         assetsInlineLimit: 4096,
         rollupOptions: {
+          input: {
+            main: path.resolve(__dirname, 'index.html')
+          },
           output: {
             manualChunks: undefined
           }
